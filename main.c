@@ -7,29 +7,15 @@ int main(int argc, char **argv){
 		return 1;
 	}
 
-	SDL_Window *window;
+        SDL_Window *window = SDL_CreateWindow(WINDOW_TITLE, WINDOW_X, WINDOW_Y, WINDOW_W, WINDOW_H, WINDOW_FLAG);
 
-	window = SDL_CreateWindow(
-		WINDOW_TITLE,
-		WINDOW_X,
-		WINDOW_Y,
-		WINDOW_W,
-		WINDOW_H,
-		WINDOW_FLAG);
+        SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 	if(window == NULL){
 		SDL_Log("Unable to initalize window: %s", SDL_GetError());
 		return 1;
 	}
-
-	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-	unsigned int render_bitmap[32] = {0};	
-
-	SDL_Event event;
-	
-	state = draw;
-	bool run = true;
+		
 	while(run){
 		while(SDL_PollEvent(&event) == 1){
 			switch(event.type){
@@ -60,6 +46,30 @@ int main(int argc, char **argv){
 			}
 		}		
 
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+		if(SDL_RenderClear(renderer) != 0){
+			SDL_Log("Unable to clear screen: %s", SDL_GetError());
+			return 1;
+		}
+
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+/*
+		SDL_Rect rect;
+		rect.w = 32;
+		rect.h = 32;
+*/
+		for(int i = 0; i < 31; i++){
+			for(int j = 0; j < 31; j++){
+				if(render_bitmap[i] >> (31 - j) & 1){
+					/*
+					rect.x = j*32;
+					rect.y = i*32;
+					*/
+					SDL_RenderFillRect(renderer, &(SDL_Rect) {j*32, i*32, 32, 32});
+				}
+			}
+		}
+					
 		SDL_RenderPresent(renderer);
 	}
 
