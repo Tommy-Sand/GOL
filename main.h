@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
@@ -20,8 +21,8 @@ enum {draw = 0, eval = 1} state = draw;
 
 SDL_Event event;
 
-unsigned int render_bitmap[NUM_CELL_Y] = {0};
+unsigned int *render_bitmap;
 bool run = 1;
 
 int render(SDL_Renderer *renderer, unsigned int *render_bitmap);
-void evaluate_cells(unsigned int *render_bitmap);
+unsigned int *evaluate_cells(unsigned int *render_bitmap);

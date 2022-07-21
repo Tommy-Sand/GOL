@@ -11,11 +11,13 @@ int main(int argc, char **argv){
 
         SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
+	render_bitmap = (unsigned int *) calloc(NUM_CELL_Y, sizeof(unsigned int)) ;
+
 	if(window == NULL){
 		SDL_Log("Unable to initalize window: %s", SDL_GetError());
 		return 1;
 	}
-		
+
 	while(run){
 		while(SDL_PollEvent(&event) == 1){
 			switch(event.type){
@@ -58,7 +60,9 @@ int main(int argc, char **argv){
 		
 
 		if(state == eval){
-			evaluate_cells(render_bitmap);
+			unsigned int *temp = render_bitmap;
+			render_bitmap = evaluate_cells(render_bitmap);
+			free(temp);
 			state = draw;
 		}
 
@@ -67,7 +71,7 @@ int main(int argc, char **argv){
 		}
 		SDL_RenderPresent(renderer);
 	}
-
+	free(render_bitmap);
 	SDL_Quit();
 	return 0;
 }
@@ -94,33 +98,41 @@ int render(SDL_Renderer *renderer, unsigned int *render_bitmap){
 
 }
 
-void evaluate_cells(unsigned int *render_bitmap){
-	unsigned int render_bitmap_event[NUM_CELL_Y][NUM_CELL_X] = {0};
+unsigned int *evaluate_cells(unsigned int *render_bitmap){
+	unsigned int *render_bitmap_event = (unsigned int *) calloc(NUM_CELL_Y, sizeof(unsigned int));
 	for(int i = 0; i < NUM_CELL_Y; i++){
 		for(int j = 0; j < NUM_CELL_X; j++){
 			int cell_state = render_bitmap[i] >> (NUM_CELL_X_0 - j) & 1;
 			int adjacent_lcells = 0; 
 			if(j > 0)
-				render_bitmap_event[i][j] += render_bitmap[i] >> (NUM_CELL_X_0 + 1 - j) & 1;
+				adjacent_lcells += render_bitmap[i] >> (NUM_CELL_X_0 + 1 - j) & 1;
 			if(j < NUM_CELL_X_0 )
-				render_bitmap_event[i][j] += render_bitmap[i] >> (NUM_CELL_X_0 - 1 - j) & 1;
+				adjacent_lcells += render_bitmap[i] >> (NUM_CELL_X_0 - 1 - j) & 1;
 			if(i > 0)
-				render_bitmap_event[i][j]+= render_bitmap[i-1] >> (NUM_CELL_X_0  - j) & 1;
+				adjacent_lcells += render_bitmap[i-1] >> (NUM_CELL_X_0  - j) & 1;
 			if(i < NUM_CELL_Y_0 )
-				render_bitmap_event[i][j]+= render_bitmap[i+1] >> (NUM_CELL_X_0  - j) & 1;
+				adjacent_lcells  += render_bitmap[i+1] >> (NUM_CELL_X_0  - j) & 1;
 			if(i > 0 && j > 0)
-				render_bitmap_event[i][j] += render_bitmap[i-1] >> (NUM_CELL_X_0 + 1 - j) & 1;
+				adjacent_lcells  += render_bitmap[i-1] >> (NUM_CELL_X_0 + 1 - j) & 1;
 			if(i < NUM_CELL_X_0  && j < NUM_CELL_Y_0)
-				render_bitmap_event[i][j] += render_bitmap[i+1] >> (NUM_CELL_X_0 - 1 - j) & 1;
+				adjacent_lcells  += render_bitmap[i+1] >> (NUM_CELL_X_0 - 1 - j) & 1;
 			if(i > 0 && j < NUM_CELL_X_0 )
-				render_bitmap_event[i][j] += render_bitmap[i-1] >> (NUM_CELL_X_0 - 1 - j) & 1;
+				adjacent_lcells  += render_bitmap[i-1] >> (NUM_CELL_X_0 - 1 - j) & 1;
 			if(i < NUM_CELL_Y_0  && j > 0)
-				render_bitmap_event[i][j] += render_bitmap[i+1] >> (NUM_CELL_X_0 + 1 - j) & 1;
-			//printf("%d", render_bitmap_event[i][j]);// for debugging
-					
+				adjacent_lcells  += render_bitmap[i+1] >> (NUM_CELL_X_0 + 1 - j) & 1;
+			//printf("%d", adjacent_lcells);// for debugging
+			
+			if(cell_state == 1){ // The cell is live
+				if(adjacent_lcells == 2 || adjacent_lcells == 3)
+					render_bitmap_event[i] |= 1 << (31 - j);
+			}
+			else if(cell_state == 0){
+				if(adjacent_lcells == 3)
+					render_bitmap_event[i] |= 1 << (31 - j);
+			}
+			//printf("%d", (render_bitmap_event[i] >> (31 - j)) & 1);	
 		}
 	//printf("\n");// For debugging
 	}
-
-
+	return render_bitmap_event;
 }
