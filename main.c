@@ -116,10 +116,10 @@ void evaluate_cells(unsigned int *render_bitmap){
 				render_bitmap_event[i][j] += render_bitmap[i-1] >> (NUM_CELL_X_0 - 1 - j) & 1;
 			if(i < NUM_CELL_Y_0  && j > 0)
 				render_bitmap_event[i][j] += render_bitmap[i+1] >> (NUM_CELL_X_0 + 1 - j) & 1;
-			printf("%d", render_bitmap_event[i][j]);// for debugging
+			//printf("%d", render_bitmap_event[i][j]);// for debugging
 					
 		}
-	printf("\n");// For debugging
+	//printf("\n");// For debugging
 	}
 
 
