@@ -53,19 +53,15 @@ int main(int argc, char **argv){
 		}
 
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-/*
-		SDL_Rect rect;
-		rect.w = 32;
-		rect.h = 32;
-*/
+
 		for(int i = 0; i < 31; i++){
 			for(int j = 0; j < 31; j++){
 				if(render_bitmap[i] >> (31 - j) & 1){
-					/*
+					
 					rect.x = j*32;
 					rect.y = i*32;
-					*/
-					SDL_RenderFillRect(renderer, &(SDL_Rect) {j*32, i*32, 32, 32});
+					
+					SDL_RenderFillRect(renderer, &rect);
 				}
 			}
 		}

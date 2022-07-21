@@ -17,3 +17,5 @@ SDL_Event event;
 unsigned int render_bitmap[32] = {0};
 
 bool run = 1;
+
+SDL_Rect rect = {0, 0 ,32, 32};
