@@ -24,14 +24,14 @@ int main(int argc, char **argv){
 					break;
 
 				case SDL_MOUSEBUTTONUP:
-					if(event.button.button == SDL_BUTTON_LEFT){
+					if(state == draw && event.button.button == SDL_BUTTON_LEFT){
 						//Turns a bit on if off and vice versa
-						render_bitmap[event.button.y/32] ^= 1 << (31 - (event.button.x/32));
+						render_bitmap[event.button.y/CELL_SIZE] ^= 1 << (31 - (event.button.x/CELL_SIZE));
 
 						/*	
 						//Debug bit mouse placement
-						for(int i = 0; i < 32; i++){
-							for(int j = 0; j < 32; j++){
+						for(int i = 0; i < NUM_CELL_Y; i++){
+							for(int j = 0; j < NUM_CELL_X; j++){
 								printf("%d", (render_bitmap[i] >> (31 - j)) & 1);
 							}
 							printf("\n");
@@ -40,6 +40,15 @@ int main(int argc, char **argv){
 						printf("\n");
 						*/
 					}
+					if(event.button.button == SDL_BUTTON_RIGHT){
+						if(state == eval){
+							state = draw;
+						}
+						else{
+							state = eval;
+						}
+					}
+
 			}
 			if(run == false){
 				break;
@@ -52,14 +61,41 @@ int main(int argc, char **argv){
 			return 1;
 		}
 
+
+		if(state == eval){
+			for(int i = 0; i < 32; i++){
+				for(int j = 0; j < 32; j++){
+					int cell_state = render_bitmap[i] >> (31 - j) & 1;
+					int adjacent_lcells = 0; 
+					if(j > 0)
+						adjacent_lcells += render_bitmap[i] >> (32 - j) & 1;
+					if(j < 31)
+						adjacent_lcells += render_bitmap[i] >> (30 - j) & 1;
+					if(i > 0)
+						adjacent_lcells += render_bitmap[i-1] >> (31 - j) & 1;
+					if(i < 31)
+						adjacent_lcells += render_bitmap[i+1] >> (31 - j) & 1;
+					if(i > 0 && j > 0)
+						adjacent_lcells += render_bitmap[i-1] >> (32 - j) & 1;
+					if(i < 31 && j < 31)
+						adjacent_lcells += render_bitmap[i+1] >> (30 - j) & 1;
+					if(i > 0 && j < 31)
+						adjacent_lcells += render_bitmap[i-1] >> (30 - j) & 1;
+					if(i < 31 && j > 0)
+						adjacent_lcells += render_bitmap[i+1] >> (32 - j) & 1;
+					//printf("%d", adjacent_lcells); for debugging
+				}
+				//printf("\n"); For debugging
+			}
+			state = draw;
+		}
+
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
-		for(int i = 0; i < 31; i++){
-			for(int j = 0; j < 31; j++){
+		for(int i = 0; i < NUM_CELL_Y; i++){
+			for(int j = 0; j < NUM_CELL_X; j++){
 				if(render_bitmap[i] >> (31 - j) & 1){
-					
-					rect.x = j*32;
-					rect.y = i*32;
+					SDL_Rect rect = {j*CELL_SIZE, i*CELL_SIZE, CELL_SIZE, CELL_SIZE};
 					
 					SDL_RenderFillRect(renderer, &rect);
 				}
