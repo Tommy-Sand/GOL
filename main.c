@@ -19,45 +19,6 @@ int main(int argc, char **argv){
 	}
 
 	while(run){
-		/*
-		while(SDL_PollEvent(&event) == 1){
-			switch(event.type){
-				case SDL_QUIT:
-					run = false;
-					break;
-
-				case SDL_MOUSEBUTTONUP:
-					if(state == draw && event.button.button == SDL_BUTTON_LEFT){
-						//Turns a bit on if off and vice versa
-						render_bitmap[event.button.y/CELL_SIZE] ^= 1 << (31 - (event.button.x/CELL_SIZE));
-
-							
-						//Debug bit mouse placement
-						for(int i = 0; i < NUM_CELL_Y; i++){
-							for(int j = 0; j < NUM_CELL_X; j++){
-								printf("%d", (render_bitmap[i] >> (31 - j)) & 1);
-							}
-							printf("\n");
-					
-						}
-						printf("\n");
-						
-					}
-					if(event.button.button == SDL_BUTTON_RIGHT){
-						if(state == eval){
-							state = draw;
-					}
-						else{
-							state = eval;
-						}
-					}
-
-			}
-			if(run == false){
-				break;
-			}
-		}		
-		*/
 		handle_event(render_bitmap);
 
 		if(state == eval){
