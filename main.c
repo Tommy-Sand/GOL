@@ -11,9 +11,9 @@ int main(int argc, char **argv){
 
         SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-	render_bitmap = (unsigned int **) calloc(NUM_CELL_Y, sizeof(unsigned int *)) ;
+	render_bitmap = (uint32_t **) calloc(NUM_CELL_Y, sizeof(uint32_t *)) ;
 	for(int i = 0; i < NUM_CELL_Y; i++){
-		render_bitmap[i] = (unsigned int *) calloc((int) ((NUM_CELL_X_0/32) + 1), sizeof(unsigned int));
+		render_bitmap[i] = (uint32_t *) calloc((int) ((NUM_CELL_X_0/32) + 1), sizeof(uint32_t));
 	}
 
 	//printf("num of uint32 columns used: %d\n", (int) ((NUM_CELL_X_0/32) + 1)); //only for debugging
@@ -27,7 +27,7 @@ int main(int argc, char **argv){
 		handle_event(render_bitmap);
 
 		if(state == eval){
-			unsigned int **temp = render_bitmap;
+			uint32_t **temp = render_bitmap;
 			render_bitmap = evaluate_cells(render_bitmap);
 			free(temp);
 			state = draw;
@@ -43,7 +43,7 @@ int main(int argc, char **argv){
 	return 0;
 }
 
-void handle_event(unsigned int **render_bitmap){
+void handle_event(uint32_t **render_bitmap){
 	SDL_Event event;
 	while(SDL_PollEvent(&event) == 1){
 		switch(event.type){
@@ -54,7 +54,7 @@ void handle_event(unsigned int **render_bitmap){
 			case SDL_MOUSEBUTTONUP:
 				if(state == draw && event.button.button == SDL_BUTTON_LEFT){
 					//Turns a bit on if off and vice versa
-					unsigned int cell_block = event.button.x/(32 * CELL_SIZE);
+					uint32_t cell_block = event.button.x/(32 * CELL_SIZE);
 					render_bitmap[event.button.y/CELL_SIZE][cell_block] ^= 1 << (31 - ((event.button.x/CELL_SIZE)) % 32);//32 being the size of an unsigned interger
 					
 					/*
@@ -85,7 +85,7 @@ void handle_event(unsigned int **render_bitmap){
 	}	
 }
 
-int render(SDL_Renderer *renderer, unsigned int **render_bitmap){
+int render(SDL_Renderer *renderer, uint32_t **render_bitmap){
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 	if(SDL_RenderClear(renderer) != 0){
 		SDL_Log("Unable to clear screen: %s", SDL_GetError());
@@ -107,16 +107,16 @@ int render(SDL_Renderer *renderer, unsigned int **render_bitmap){
 
 }
 
-unsigned int **evaluate_cells(unsigned int **render_bitmap){
+unsigned int **evaluate_cells(uint32_t **render_bitmap){
 	
-	unsigned int **render_bitmap_event = (unsigned int **) calloc(NUM_CELL_Y, sizeof(unsigned int *));
+	uint32_t **render_bitmap_event = (uint32_t **) calloc(NUM_CELL_Y, sizeof(uint32_t *));
 	for(int i = 0; i < NUM_CELL_Y; i++){
-		render_bitmap_event[i] = (unsigned int *) calloc((int) (NUM_CELL_X_0/32) + 1, sizeof(unsigned int));
+		render_bitmap_event[i] = (uint32_t *) calloc((int) (NUM_CELL_X_0/32) + 1, sizeof(uint32_t));
 	}
 
 	for(int i = 0; i < NUM_CELL_Y; i++){
 		for(int j = 0; j < NUM_CELL_X; j++){
-			unsigned int cell_block = j/32; //32 being the size of an unsigned integer
+			uint32_t cell_block = j/32; //32 being the size of an unsigned integer
 			int cell_state = render_bitmap[i][cell_block] >> (NUM_CELL_X_0 - j) & 1;
 			int adjacent_lcells = 0; 
 			if(j > 0){

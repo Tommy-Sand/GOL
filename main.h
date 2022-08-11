@@ -19,9 +19,9 @@
 
 enum {draw = 0, eval = 1} state = draw;
 
-unsigned int **render_bitmap;
+uint32_t **render_bitmap;
 bool run = 1;
 
-void handle_event(unsigned int **render_bitmap);
-int render(SDL_Renderer *renderer, unsigned int **render_bitmap);
-unsigned int **evaluate_cells(unsigned int **render_bitmap);
+void handle_event(uint32_t**render_bitmap);
+int render(SDL_Renderer *renderer, uint32_t **render_bitmap);
+uint32_t **evaluate_cells(uint32_t **render_bitmap);
