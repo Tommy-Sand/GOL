@@ -52,7 +52,7 @@ void handle_event(uint32_t **render_bitmap){
 				break;
 
 			case SDL_MOUSEBUTTONUP:
-				if(state == draw && event.button.button == SDL_BUTTON_LEFT){
+				if(state == draw && event.button.button == SDL_BUTTON_LEFT && event.button.x > 0 && event.button.x < WINDOW_W && event.button.y > 0 && event.button.y < WINDOW_H){
 					//Turns a bit on if off and vice versa
 					uint32_t cell_block = event.button.x/(32 * CELL_SIZE);
 					render_bitmap[event.button.y/CELL_SIZE][cell_block] ^= 1 << (31 - ((event.button.x/CELL_SIZE)) % 32);//32 being the size of an unsigned interger
