@@ -2,6 +2,13 @@
 
 
 int main(int argc, char **argv){
+
+	NUM_CELL_X_0 = NUM_CELL_X - 1;
+	NUM_CELL_Y_0 = NUM_CELL_Y - 1;
+	CELL_SIZE = WINDOW_W/NUM_CELL_X;
+
+	
+
 	if(SDL_Init(SDL_INIT_VIDEO) != 0){
 		SDL_Log("Unable to initalize SDL: %s", SDL_GetError());
 		return 1;
@@ -116,17 +123,17 @@ unsigned int **evaluate_cells(uint32_t **render_bitmap){
 
 	for(int i = 0; i < NUM_CELL_Y; i++){
 		for(int j = 0; j < NUM_CELL_X; j++){
-			uint32_t cell_block = j/32; //32 being the size of an unsigned integer
+			uint32_t cell_block = j/32; //32 being the size of uint32_t
 			int cell_state = render_bitmap[i][cell_block] >> (NUM_CELL_X_0 - j) & 1;
 			int adjacent_lcells = 0; 
 			if(j > 0){
-				if((j - 1)/32 == cell_block)//32 being the size of an unsigned integer
+				if((j - 1)/32 == cell_block)//32 being the size of an uint32_t
 					adjacent_lcells += render_bitmap[i][cell_block] >> (NUM_CELL_X_0 + 1 - j) & 1;
 				else
 					adjacent_lcells += render_bitmap[i][cell_block - 1] & 1;
 			}
 			if(j < NUM_CELL_X_0 ){
-				if((j + 1)/32 == cell_block)//32 being the size of an unsigned integer
+				if((j + 1)/32 == cell_block)//32 being the size of an uint32_t
 					adjacent_lcells += render_bitmap[i][cell_block] >> (NUM_CELL_X_0 - 1 - j) & 1;
 				else
 					adjacent_lcells += render_bitmap[i][cell_block + 1] >> 31 & 1;
@@ -174,7 +181,7 @@ unsigned int **evaluate_cells(uint32_t **render_bitmap){
 				if(adjacent_lcells == 3)
 					render_bitmap_event[i][cell_block] |= 1 << (31 - j);
 			}
-			//printf("%d", (render_bitmap_event[i] >> (31 - j)) & 1);	
+			//printf("%d", (render_bitmap_event[i][cell_block] >> (31 - j)) & 1);	
 		}
 	//printf("\n");// For debugging
 	}
