@@ -101,6 +101,14 @@ int render(SDL_Renderer *renderer, uint32_t **render_bitmap){
 
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
+	for(int i = 0; i <= NUM_CELL_X; i++){
+		SDL_RenderDrawLine(renderer, i*CELL_SIZE, 0, i*CELL_SIZE, WINDOW_H);
+	}
+
+	for(int j = 0; j <= NUM_CELL_Y; j++){
+		SDL_RenderDrawLine(renderer, 0, j*CELL_SIZE, WINDOW_W, j*CELL_SIZE); 
+	}
+
 	for(int i = 0; i < NUM_CELL_Y; i++){
 		for(int j = 0; j < NUM_CELL_X; j++){
 			if(render_bitmap[i][j/32] >> (31 - j) & 1){

@@ -7,8 +7,8 @@
 #define WINDOW_TITLE "John Conway's Game of Life"
 #define WINDOW_X 300
 #define WINDOW_Y 300
-#define WINDOW_W 608
-#define WINDOW_H 608
+#define WINDOW_W 641
+#define WINDOW_H 641
 #define WINDOW_FLAG 0
 
 int NUM_CELL_X = 64;
