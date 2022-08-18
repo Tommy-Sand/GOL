@@ -3,11 +3,13 @@
 
 int main(int argc, char **argv){
 
+	window_dim();
+
 	NUM_CELL_X_0 = NUM_CELL_X - 1;
 	NUM_CELL_Y_0 = NUM_CELL_Y - 1;
 	CELL_SIZE = WINDOW_W/NUM_CELL_X;
 
-	
+		
 
 	if(SDL_Init(SDL_INIT_VIDEO) != 0){
 		SDL_Log("Unable to initalize SDL: %s", SDL_GetError());
@@ -48,6 +50,16 @@ int main(int argc, char **argv){
 	free(render_bitmap);
 	SDL_Quit();
 	return 0;
+}
+
+void window_dim(){
+	printf("Input the height/width of the window: ");
+	scanf("%d", &WINDOW_W);
+	printf("Input the number of cells in x and y direction: ");
+	scanf("%d", &NUM_CELL_X);
+	WINDOW_W += 1
+	WINDOW_H = WINDOW_W;
+	NUM_CELL_Y = NUM_CELL_X;
 }
 
 void handle_event(uint32_t **render_bitmap){
